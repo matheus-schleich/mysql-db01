@@ -39,4 +39,4 @@ jobs:
     steps:
     # Runs a single command using the runners shell
     - name: Send greeting
-      run: mysql -u gestor -p Abcd123! -h ${{ input.name }} < ${{ input.query }}
+      run: mysql -u gestor -p Abcd123! -h ${{ github.event.input.name }} < ${{  github.event.input.query }}
