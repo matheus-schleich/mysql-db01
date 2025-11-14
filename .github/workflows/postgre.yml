@@ -1,4 +1,4 @@
-name: Conectar Postgre
+name: Testar ligacao postgre
 
 on:
   workflow_dispatch:
@@ -10,15 +10,18 @@ on:
         type: string
 
 jobs:
-  testar-postgre:
+  greet:
     runs-on: ubuntu-latest
     environment: database-test
 
     steps:
+      - name: Enviar saudação
+        run: echo "Hello ${{ inputs.name }}"
+
       - name: Instalar cliente PostgreSQL
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Verificar conexão com PostgreSQL
+      - name: Testar ligação ao PostgreSQL
         env:
           PGHOST: ${{ inputs.name }}
           PGPORT: 5432
