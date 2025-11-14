@@ -1,45 +1,40 @@
 # This is a basic workflow that is manually triggered
-
 name: Teste Azure MySQL Server
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
+      server:
         description: 'Servidor a testar'
-        # Default value if no value is explicitly provided
         default: '---'
-        # Input has to be provided for the workflow to run
         required: true
-        # The data type of the input
         type: string
-
       query:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Query teste'
-        # Default value if no value is explicitly provided
+        description: 'Query teste (ficheiro .sql)'
         default: 'create.sql'
-        # Input has to be provided for the workflow to run
         required: true
-        # The data type of the input
         type: string
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
+  test-mysql:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell 
-    - uses: actions/checkout@v4
-    - name: check folder
+    - name: Checkout repositório
+      uses: actions/checkout@v4
+
+    - name: Verificar ficheiros no diretório
       run: ls -l
-    - name: Send greeting
-      run: mysql -h ${{ github.event.input.name }} -u gestor -p'Abcd123!' 
+
+    - name: Instalar cliente MySQL
+      run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+    - name: Executar query no servidor MySQL
+      env:
+        MYSQL_HOST: ${{ inputs.server }}
+        MYSQL_USER: gestor
+        MYSQL_PASSWORD: Abcd123!
+        MYSQL_QUERY_FILE: ${{ inputs.query }}
+      run: |
+        echo "Conectando ao servidor MySQL: $MYSQL_HOST"
+        mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$MYSQL_QUERY_FILE"tor -p'Abcd123!' 
