@@ -1,33 +1,40 @@
-name: Testar ligacao postgre
+name: Testar conexão MySQL
 
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: 'Servidor a testar'
+      server:
+        description: 'Host do servidor MySQL'
         default: '---'
+        required: true
+        type: string
+      query:
+        description: 'Ficheiro SQL a executar'
+        default: 'create.sql'
         required: true
         type: string
 
 jobs:
-  greet:
+  testar-mysql:
     runs-on: ubuntu-latest
-    environment: database-test
 
     steps:
-      - name: Enviar saudação
-        run: echo "Hello ${{ inputs.name }}"
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
 
-      - name: Instalar cliente PostgreSQL
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Instalar cliente MySQL
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
 
-      - name: Testar ligação ao PostgreSQL
+      - name: Verificar ficheiros disponíveis
+        run: ls -l
+
+      - name: Executar query no MySQL remoto
         env:
-          PGHOST: ${{ inputs.name }}
-          PGPORT: 5432
-          PGDATABASE: postgres
-          PGUSER: ${{ secrets.USER }}
-          PGPASSWORD: ${{ secrets.PASS }}
+          MYSQL_HOST: ${{ inputs.server }}
+          MYSQL_USER: gestor
+          MYSQL_PASSWORD: Abcd123!
+          MYSQL_QUERY_FILE: ${{ inputs.query }}
         run: |
-          echo "Conectando ao servidor PostgreSQL: $PGHOST"
-          psql -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT version();"
+          echo "Conectando ao servidor MySQL: $MYSQL_HOST"
+          echo "Executando ficheiro: $MYSQL_QUERY_FILE"
+          mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$MYSQL_QUERY_FILE"
