@@ -1,33 +1,43 @@
-name: Testar ligacao postgre
+name: Testar ligação PostgreSQL
 
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: 'Servidor a testar'
+      server:
+        description: 'Host do servidor PostgreSQL'
         default: '---'
+        required: true
+        type: string
+      query:
+        description: 'Ficheiro SQL a executar'
+        default: 'create.sql'
         required: true
         type: string
 
 jobs:
-  greet:
+  testar-postgre:
     runs-on: ubuntu-latest
     environment: database-test
 
     steps:
-      - name: Send greeting
-        run: echo "Hello ${{ inputs.name }}"
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
 
       - name: Instalar cliente PostgreSQL
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Testar ligação ao PostgreSQL
+      - name: Verificar ficheiros disponíveis
+        run: ls -l
+
+      - name: Testar ligação ao PostgreSQL com SSL
         env:
-          PGHOST: ${{ inputs.name }}
+          PGHOST: ${{ inputs.server }}
           PGPORT: 5432
           PGDATABASE: postgres
           PGUSER: ${{ secrets.USER }}
           PGPASSWORD: ${{ secrets.PASS }}
+          PGQUERY: ${{ inputs.query }}
         run: |
           echo "Conectando ao servidor PostgreSQL: $PGHOST"
-          psql -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT version();"
+          echo "Executando ficheiro: $PGQUERY"
+          psql "host=$PGHOST port=$PGPORT dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD sslmode=require" -f "$PGQUERY"
