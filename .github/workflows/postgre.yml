@@ -22,12 +22,11 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
     - name: Testar ligação ao PostgreSQL
-        env:
+           env:
           PGHOST: ${{ inputs.name }}
           PGPORT: 5432
           PGDATABASE: postgres
           PGUSER: ${{ secrets.USER }}
           PGPASSWORD: ${{ secrets.PASS }}
         run: |
-          echo "Conectando ao servidor PostgreSQL: $PGHOST"
           psql -c "SELECT version();"
