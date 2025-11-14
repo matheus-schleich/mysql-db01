@@ -1,5 +1,3 @@
-# This is a basic workflow that is manually triggered
-
 name: Conectar Postgre
 
 on:
@@ -12,15 +10,15 @@ on:
         type: string
 
 jobs:
-  greet:
+  testar-postgre:
     runs-on: ubuntu-latest
     environment: database-test
 
     steps:
-      - name: Enviar saudação
-        run: echo "Hello ${{ inputs.name }}"
+      - name: Instalar cliente PostgreSQL
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Testar ligação ao PostgreSQL
+      - name: Verificar conexão com PostgreSQL
         env:
           PGHOST: ${{ inputs.name }}
           PGPORT: 5432
@@ -29,5 +27,4 @@ jobs:
           PGPASSWORD: ${{ secrets.PASS }}
         run: |
           echo "Conectando ao servidor PostgreSQL: $PGHOST"
-          psql -c "SELECT version();"
-    
+          psql -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT version();"
