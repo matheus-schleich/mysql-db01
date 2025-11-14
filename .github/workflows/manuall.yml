@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
  
-name: Teste Azure MySQL Server
+name: Teste azure mysql server
  
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -42,4 +42,4 @@ jobs:
     - name: check folder
       run: ls -l
     - name: Send greeting
-      run: mysql -h "${{ inputs.server }}" -u gestor -p'Abcd123!'
+      run: mysql -h ${{ github.event.inputs.name }} -u gestor -p'Abcd123!'
