@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: Postgre
+name: Conectar Postgre
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -24,7 +24,7 @@ jobs:
   greet:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    enviroment: databse-test
+    environment: database-test
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -40,5 +40,5 @@ jobs:
           PGPASSWORD: ${{ secrets.PASS }}
           
     run: |
-          psql -c "SELECT version();"
+      psql -c "SELECT version();"
     
