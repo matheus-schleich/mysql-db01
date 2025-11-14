@@ -42,4 +42,4 @@ jobs:
     - name: check folder
       run: ls -l
     - name: Send greeting
-      run: mysql -h ${{ github.event.input.name }} -u gestor -p 'Abcd123!' 
+      run: mysql -h ${{ github.event.input.name }} -u gestor -p'Abcd123!' 
